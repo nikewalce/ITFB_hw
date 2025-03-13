@@ -32,3 +32,4 @@ class TestEngine:
         Pistons является int.
         """
         assert isinstance(engine_test.pistons, int)
+

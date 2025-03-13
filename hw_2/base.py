@@ -2,6 +2,7 @@ from abc import ABC
 from hw_2.exceptions import LowFuelError, NotEnoughFuel
 
 class Vehicle(ABC):
+
     def __init__(self, weight: int = 0, started: bool = False, fuel: int = 0, fuel_consumption: int = 0):
         self.weight = weight
         self.started = started

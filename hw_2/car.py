@@ -6,6 +6,7 @@
 объявите метод set_engine, который принимает в себя экземпляр объекта Engine и устанавливает на текущий экземпляр Car
 
 # """
+
 from hw_2.base import Vehicle
 from hw_2.engine import Engine
 

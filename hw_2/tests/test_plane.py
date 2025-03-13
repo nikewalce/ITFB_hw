@@ -47,3 +47,4 @@ class TestPlane:
         amount_more = 1001
         with pytest.raises(CargoOverload):
             plane_test.load_cargo(amount_more)
+

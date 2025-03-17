@@ -28,3 +28,4 @@ def plane_test():
         fuel_consumption = 50.0, cargo = 0, max_cargo = 1000
     )
     yield plane
+

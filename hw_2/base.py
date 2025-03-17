@@ -57,7 +57,7 @@ class Vehicle(ABC):
         if self.fuel > 0:
             self.started = True
         else:
-            raise LowFuelError("Низкий уровень топлива!")
+            raise LowFuelError(fuel_level = self.fuel)
 
     def move(self, distance: int):
         """проверяет, что топлива достаточно для преодоления переданной дистанции
@@ -67,6 +67,6 @@ class Vehicle(ABC):
             raise ValueError("Двигатель заглушен!")
         required_fuel = (distance * self.fuel_consumption) / 100
         if self.fuel < required_fuel:
-            raise NotEnoughFuel("Не хватает топлива!")
+            raise NotEnoughFuel(required_fuel=required_fuel, available_fuel=self.fuel)
 
         self.fuel -= required_fuel

@@ -39,7 +39,7 @@ class Plane(Vehicle):
         if amount + self.cargo <= self.max_cargo:
             self.cargo += amount
         else:
-            raise CargoOverload(f"Перегруз на: {amount + self.cargo - self.max_cargo}")
+            raise CargoOverload(excess_weight = (amount + self.cargo - self.max_cargo), cargo_weight = self.cargo, max_capacity = self.max_cargo)
 
     def remove_all_cargo(self):
         """Обнуляет значение cargo и возвращает его предыдущее значение"""

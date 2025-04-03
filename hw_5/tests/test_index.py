@@ -65,6 +65,11 @@ def test_categories_menu(browser, base_url):
         print("Элемент не появился или его нет")
         assert False, "Элемент не появился или его нет"
 
+def test_carousel_div(browser,base_url):
+    browser.get(base_url)
+    carousel_div = WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "carousel-item")))
+    assert carousel_div is not None
+
 #Тест на проверку работы поля поиска (позитив)
 def test_search_functionality(browser, base_url):
     browser.get(base_url)

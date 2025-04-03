@@ -4,6 +4,50 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 
 
+# Тест на наличия блока для ввода персональных данных
+def test_fieldset_personal_details(browser, register_url):
+    browser.get(register_url)
+
+    fieldset = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located((By.ID, "account"))
+    )
+    assert fieldset is not None
+
+# Тест на наличия тега legend с текстом Newsletter
+def test_legend_newsletter(browser, register_url):
+    browser.get(register_url)
+
+    legend_Newsletter = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//legend[text()='Newsletter']"))
+    )
+    assert legend_Newsletter is not None
+    assert legend_Newsletter.text == 'Newsletter'
+
+# Тест на наличия input Subscribe
+def test_input_subscribe(browser, register_url):
+    browser.get(register_url)
+
+    input_subscribe = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located((By.ID, "input-newsletter"))
+    )
+    assert input_subscribe is not None
+
+#Проверка кликабельности input Subscribe
+def test_clickable_toggle_switch_subscribe(browser,register_url):
+    browser.get(register_url)
+    toggle_switch = WebDriverWait(browser, 5).until(
+        EC.element_to_be_clickable((By.ID, "input-newsletter"))
+    )
+
+    assert toggle_switch.is_enabled()
+
+#Проверка наличия ссылки на форму регистрации в breadcrumb
+def test_breadcrumb_contains_register_link(browser, register_url):
+    browser.get(register_url)
+
+    register_link = browser.find_element(By.XPATH, "//ul[@class='breadcrumb']//a[contains(text(), 'Register')]")
+    assert register_link.is_displayed(), "Ссылка на Register не найдена!"
+
 # Тест на успешную регистрацию нового пользователя
 def test_successful_registration(browser, register_url):
     browser.get(register_url)

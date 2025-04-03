@@ -6,6 +6,24 @@ from selenium.webdriver.support import expected_conditions as EC
 Использовать методы явного ожидания элементов
 """
 
+#Проверка отображения кнопки для раскрытия категорий при уменьшенном размере экрана
+def test_navbar_button(browser, base_url):
+    browser.get(base_url)
+    browser.set_window_size(980, 545)
+    button = WebDriverWait(browser,5).until(EC.visibility_of_element_located((By.CLASS_NAME, "navbar-toggler")))
+    assert button is not None
+
+#Проверка наличия блока категорий
+def test_div_categories(browser, base_url):
+    browser.get(base_url)
+    menu = WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div#category")))
+    assert menu is not None
+
+#Проверка наличия navbar-menu
+def test_navbar_menu(browser, base_url):
+    browser.get(base_url)
+    menu = WebDriverWait(browser,5).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div#navbar-menu")))
+    assert menu is not None
 
 #Тест на наличие всех категорий
 def test_categories(browser, base_url):

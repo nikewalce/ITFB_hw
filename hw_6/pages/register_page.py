@@ -1,36 +1,58 @@
 from ..pages.base_page import BasePage
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from .locators.register_page_locators import RegisterPageLocators as Locator
+
 
 class RegisterPage(BasePage):
-    INPUT_FIRSTNAME = By.ID, "input-firstname"
-    INPUT_LASTNAME = By.ID, "input-lastname"
-    INPUT_EMAIL = By.ID, "input-email"
-    INPUT_PASSWORD = By.ID, "input-password"
-    CHECKBOX_AGREE = By.NAME, "agree"
-    CONTINUE_BUTTON = By.XPATH, "//button[text()='Continue']"
+    TIMEOUT = 5
 
-    def enter_firstname(self, firstname):
-        self.input_value(self.INPUT_FIRSTNAME, firstname)
+    def enter_firstname(self):
+        firstname = "firstname"
+
+        element = WebDriverWait(self.browser, self.TIMEOUT).until(
+            EC.visibility_of_element_located(Locator.INPUT_FIRSTNAME)
+        )
+        element.clear()
+        element.send_keys(firstname)
         return self
 
-    def enter_lastname(self, lastname):
-        self.input_value(self.INPUT_LASTNAME, lastname)
+    def enter_lastname(self):
+        lastname = "lastname"
+        element = WebDriverWait(self.browser, self.TIMEOUT).until(
+            EC.visibility_of_element_located(Locator.INPUT_LASTNAME)
+        )
+        element.clear()
+        element.send_keys(lastname)
         return self
 
-    def enter_email(self, email):
-        self.input_value(self.INPUT_EMAIL, email)
+    def enter_email(self):
+        email = "11email@example.com"
+        element = WebDriverWait(self.browser, self.TIMEOUT).until(
+            EC.visibility_of_element_located(Locator.INPUT_EMAIL)
+        )
+        element.clear()
+        element.send_keys(email)
         return self
 
-    def enter_password(self, password):
-        self.input_value(self.INPUT_PASSWORD, password)
+    def enter_password(self):
+        password = "password"
+        element = WebDriverWait(self.browser, self.TIMEOUT).until(
+            EC.visibility_of_element_located(Locator.INPUT_PASSWORD)
+        )
+        element.clear()
+        element.send_keys(password)
         return self
 
     def click_checkbox(self):
-        self.get_element(self.CHECKBOX_AGREE).click()
+        self.click_with_scroll(Locator.CHECKBOX_AGREE)
         return self
 
     def click_continue(self):
-        self.get_element(self.CONTINUE_BUTTON).click()
+        self.click_with_scroll(Locator.CONTINUE_BUTTON)
         return self
+
+    def check_created_account(self):
+        return WebDriverWait(self.browser, self.TIMEOUT).until(
+        EC.presence_of_element_located(Locator.CREATED_ACCOUNT)
+    )

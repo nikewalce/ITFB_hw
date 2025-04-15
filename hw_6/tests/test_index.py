@@ -18,7 +18,6 @@ def test_currency_dropdown(browser, base_url, currency_symbol, expected_text):
         main_page.click_euro_option()
     elif currency_symbol == "$":
         main_page.click_dollar_option()
-        time.sleep(0.3)
 
     updated_currency = main_page.text_in_currency_button(currency_symbol)
     assert expected_text in updated_currency.text

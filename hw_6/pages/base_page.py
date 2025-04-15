@@ -1,8 +1,7 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.alert import Alert
-from selenium.common.exceptions import NoAlertPresentException, ElementClickInterceptedException
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoAlertPresentException
 
 class BasePage:
 
@@ -15,39 +14,6 @@ class BasePage:
             alert.accept()
         except NoAlertPresentException:
             pass
-
-    def get_element(self, locator, timeout=3):
-        try:
-            element = WebDriverWait(self.browser, timeout).until(
-                EC.presence_of_element_located(locator)
-            )
-
-            actions = ActionChains(self.browser)
-            actions.move_to_element(element).perform()
-
-            WebDriverWait(self.browser, timeout).until(EC.visibility_of(element))
-            return element
-        except Exception as e:
-            print(f"Error: {e}")
-            return None
-
-    def get_text_in_element(self, locator, text, timeout=3):
-        return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
-
-    def input_value(self, locator: tuple, text: str):
-        element = self.get_element(locator)
-        try:
-            element.click()
-            element.clear()
-            for l in text:
-                element.send_keys(l)
-        except ElementClickInterceptedException:
-            self.browser.execute_script("arguments[0].scrollIntoView(true);", element)
-            ActionChains(self.browser).move_to_element(element).click().perform()
-            element.clear()
-            for l in text:
-                element.send_keys(l)
-
 
     def scroll_to_top(self, timeout=1):
         self.browser.execute_script("window.scrollTo(0, 0);")
@@ -67,3 +33,16 @@ class BasePage:
                 last_height = self.browser.execute_script("return document.body.scrollHeight")
             except:
                 break
+
+    def click_with_scroll(self, locator, timeout=1):
+        element = WebDriverWait(self.browser, timeout).until(
+            EC.presence_of_element_located(locator)
+        )
+        self.browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        WebDriverWait(self.browser, timeout).until(
+            EC.element_to_be_clickable(locator)
+        )
+        try:
+            element.click()
+        except:
+            self.browser.execute_script("arguments[0].click();", element)

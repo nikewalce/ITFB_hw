@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+allure-2.33.0/
+allure-report/
+allure-results/
+allure&log.txt
+test_hw_7_log.log

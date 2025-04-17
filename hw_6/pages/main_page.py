@@ -1,35 +1,22 @@
-from ..pages.base_page import BasePage
-from .locators.main_page_locators import MainPageLocators as Locator
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from pages.base_page import BasePage
+from pages.locators.main_page_locators import MainPageLocators as Locator
 
 class MainPage(BasePage):
-    TIMEOUT = 5
 
     def click_currency_button(self):
-        WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.element_to_be_clickable(Locator.CURRENCY_BUTTON)
-        ).click()
+        self.get_element(Locator.CURRENCY_BUTTON, timeout=1).click()
 
-    def click_pound_option(self):
-        WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.element_to_be_clickable(Locator.POUND_CURRENCY)
-        ).click()
-
-    def click_euro_option(self):
-        WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.element_to_be_clickable(Locator.EURO_CURRENCY)
-        ).click()
-
-    def click_dollar_option(self):
-        WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.element_to_be_clickable(Locator.DOLLAR_CURRENCY)
-        ).click()
+    def select_currency(self, symbol):
+        currency_map = {
+            "£": Locator.POUND_CURRENCY,
+            "€": Locator.EURO_CURRENCY,
+            "$": Locator.DOLLAR_CURRENCY
+        }
+        locator = currency_map.get(symbol)
+        if not locator:
+            raise ValueError(f"Unknown currency symbol: {symbol}")
+        self.get_element(locator, timeout=1).click()
 
     def text_in_currency_button(self, text):
-        WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.text_to_be_present_in_element(Locator.CURRENCY_TEXT, text)
-        )
-        return WebDriverWait(self.browser, self.TIMEOUT).until(
-            EC.presence_of_element_located(Locator.CURRENCY_TEXT)
-        )
+        self.text_to_be_present_in_element(Locator.CURRENCY_TEXT, text, timeout=1)
+        return self.get_element(Locator.CURRENCY_TEXT,timeout=1)

@@ -15,14 +15,20 @@ class BasePage:
         except NoAlertPresentException:
             pass
 
-    def scroll_to_top(self, timeout=1):
+    def get_element(self, locator, timeout):
+        return WebDriverWait(self.browser, timeout).until(EC.visibility_of_element_located(locator))
+
+    def text_to_be_present_in_element(self,  locator, text, timeout):
+        return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
+
+    def scroll_to_top(self, timeout):
         self.browser.execute_script("window.scrollTo(0, 0);")
 
         WebDriverWait(self.browser, timeout).until(
             lambda driver: driver.execute_script("return window.pageYOffset") == 0
         )
 
-    def scroll_to_end(self, timeout=1):
+    def scroll_to_end(self, timeout):
         last_height = self.browser.execute_script("return document.body.scrollHeight")
         while True:
             self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -34,7 +40,7 @@ class BasePage:
             except:
                 break
 
-    def click_with_scroll(self, locator, timeout=1):
+    def click_with_scroll(self, locator, timeout):
         element = WebDriverWait(self.browser, timeout).until(
             EC.presence_of_element_located(locator)
         )

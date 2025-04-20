@@ -1,4 +1,5 @@
 from pages.register_page import RegisterPage
+import allure
 
 @allure.feature('hw_7')
 @allure.story('Тестирование страницы регистрации')

@@ -4,11 +4,15 @@ from selenium.webdriver.common.alert import Alert
 from selenium.common.exceptions import NoAlertPresentException
 import logging
 import allure
+from config import Config
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 class BasePage:
     """Базовый класс"""
     def __init__(self, browser):
         self.browser = browser
+        self.config = Config()
         self.logger = getattr(browser, 'logger', self._create_logger())
         self.class_name = type(self).__name__
 
@@ -55,41 +59,25 @@ class BasePage:
         return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
 
     def scroll_to_top(self, timeout):
-        self.logger.debug("Скроллинг в самый верх страницы")
-        self.browser.execute_script("window.scrollTo(0, 0);")
-
-        WebDriverWait(self.browser, timeout).until(
-            lambda driver: driver.execute_script("return window.pageYOffset") == 0
-        )
+        self.logger.debug("Скроллинг вверх через ActionChains (несколько раз Page Up)")
+        actions = ActionChains(self.browser)
+        for _ in range(2):
+            actions.send_keys(Keys.PAGE_UP).pause(0.2).perform()
         self.logger.debug("Скроллинг вверх завершен")
 
     def scroll_to_end(self, timeout):
-        self.logger.debug("Скроллинг в самый низ страницы")
-        last_height = self.browser.execute_script("return document.body.scrollHeight")
-        while True:
-            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            try:
-                WebDriverWait(self.browser, timeout).until(
-                    lambda driver: driver.execute_script("return document.body.scrollHeight") > last_height
-                )
-                last_height = self.browser.execute_script("return document.body.scrollHeight")
-                self.logger.debug("Прокручено больше, новая высота: %s", last_height)
-            except:
-                self.logger.debug("Достингнут конец страницы")
-                break
+        self.logger.debug("Скроллинг вниз через ActionChains (несколько раз Page Down)")
+        actions = ActionChains(self.browser)
+        for _ in range(5):
+            actions.send_keys(Keys.PAGE_DOWN).pause(0.2).perform()
+        self.logger.debug("Скроллинг вниз завершен")
 
     def click_with_scroll(self, locator, timeout):
-        self.logger.debug("Клик элемента после скроллинга: %s", locator)
+        self.logger.debug("Ожидание элемента для клика с прокруткой: %s", locator)
         element = WebDriverWait(self.browser, timeout).until(
-            EC.presence_of_element_located(locator)
-        )
-        self.browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        WebDriverWait(self.browser, timeout).until(
             EC.element_to_be_clickable(locator)
         )
-        try:
-            element.click()
-            self.logger.info("Элемент нажат: %s", locator)
-        except:
-            self.logger.warning("Стандартный клик не сработал. Используется JS клик для элемента: %s", locator)
-            self.browser.execute_script("arguments[0].click();", element)
+        actions = ActionChains(self.browser)
+        actions.move_to_element(element).pause(0.2).perform()
+        element.click()
+        self.logger.info("Клик выполнен по элементу: %s", locator)

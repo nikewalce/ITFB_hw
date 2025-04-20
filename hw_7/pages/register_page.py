@@ -7,38 +7,34 @@ class RegisterPage(BasePage):
 
     @allure.step('Ввод имени')
     def enter_firstname(self):
-        firstname = "firstname"
-        self.logger.info("Ввод имени: %s", firstname)
+        self.logger.info("Ввод имени: %s", self.config.register_firstname)
         element = self.get_element(Locator.INPUT_FIRSTNAME, timeout=1)
         element.clear()
-        element.send_keys(firstname)
+        element.send_keys(self.config.register_firstname)
         return self
 
     @allure.step('Ввод фамилии')
     def enter_lastname(self):
-        lastname = "lastname"
-        self.logger.info("Ввод фамилии: %s", lastname)
+        self.logger.info("Ввод фамилии: %s", self.config.register_lastname)
         element = self.get_element(Locator.INPUT_LASTNAME, timeout=1)
         element.clear()
-        element.send_keys(lastname)
+        element.send_keys(self.config.register_lastname)
         return self
 
     @allure.step('Ввод почты')
     def enter_email(self):
-        email = "13email@example.com"
-        self.logger.info("Ввод email: %s", email)
+        self.logger.info("Ввод email: %s", self.config.register_email)
         element = self.get_element(Locator.INPUT_EMAIL, timeout=1)
         element.clear()
-        element.send_keys(email)
+        element.send_keys(self.config.register_email)
         return self
 
     @allure.step('Ввод пароля')
     def enter_password(self):
-        password = "password"
         self.logger.info("Ввод пароля")
         element = self.get_element(Locator.INPUT_PASSWORD, timeout=1)
         element.clear()
-        element.send_keys(password)
+        element.send_keys(self.config.register_password)
         return self
 
     @allure.step('Нажимаем на чекбокс согласия с политикой')

@@ -3,5 +3,12 @@ __pycache__/
 allure-2.33.0/
 allure-report/
 allure-results/
-allure&log.txt
-test_hw_7_log.log
+chrome-win64/
+**/allure&log.txt
+**/browsers.json
+**/test_hw_7_log.log
+**/cm.exe
+**/geckodriver.exe
+**/selenoid.exe
+**/yandexdriver.exe
+.env

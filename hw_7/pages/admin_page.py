@@ -9,13 +9,11 @@ class AdminPage(BasePage):
 
     @allure.step('Ввод логина и пароля')
     def login_to_admin(self):
-        username = 'admin1'
-        password = 'admin'
-        self.logger.info("Авторизация в админку с логином: %s, паролем: %s", username, password)
+        self.logger.info("Авторизация в админку с логином: %s, паролем: %s", self.config.username, self.config.password)
         """Ввод логина"""
-        self.get_element(Locator.INPUT_USERNAME, timeout=1).send_keys(username)
+        self.get_element(Locator.INPUT_USERNAME, timeout=1).send_keys(self.config.username)
         """Ввод пароля"""
-        self.get_element(Locator.INPUT_PASSWORD, timeout=1).send_keys(password)
+        self.get_element(Locator.INPUT_PASSWORD, timeout=1).send_keys(self.config.password)
         self.logger.debug("Введены логин и пароль.")
         return self
 
@@ -46,25 +44,21 @@ class AdminPage(BasePage):
 
     @allure.step("Добавляем новый продукт")
     def add_new_product(self):
-        product_name = "AName1"
-        meta_tag_title = "Tag"
-        model = "model"
-        keyword = "keywordA"
-        self.logger.info("Добавление нового продукта: %s", product_name)
+        self.logger.info("Добавление нового продукта: %s", self.config.product_name)
         """Ввод названия продукта"""
-        self.get_element(Locator.INPUT_PRODUCT_NAME, timeout=1).send_keys(product_name)
+        self.get_element(Locator.INPUT_PRODUCT_NAME, timeout=1).send_keys(self.config.product_name)
         self.scroll_to_end(timeout=1)
         """Ввод мета-тэга"""
-        self.get_element(Locator.INPUT_META_TAG_TITLE, timeout=1).send_keys(meta_tag_title)
+        self.get_element(Locator.INPUT_META_TAG_TITLE, timeout=1).send_keys(self.config.meta_tag_title)
         self.scroll_to_top(timeout=1)
         """Переход на страницу Data"""
         self.get_element(Locator.DATA_PAGE, timeout=1).click()
         """Ввод названия модели"""
-        self.get_element(Locator.INPUT_MODEL, timeout=1).send_keys(model)
+        self.get_element(Locator.INPUT_MODEL, timeout=1).send_keys(self.config.model)
         """Переход на страницу СЕО"""
         self.get_element(Locator.SEO_PAGE, timeout=1).click()
         """Добавление ключевого слова"""
-        self.get_element(Locator.INPUT_KEYWORD, timeout=1).send_keys(keyword)
+        self.get_element(Locator.INPUT_KEYWORD, timeout=1).send_keys(self.config.keyword)
         """Нажимаем на кнопку сохранения"""
         self.get_element(Locator.SAVE_BUTTON, timeout=1).click()
         self.logger.info("Продукт успешно добавлен.")

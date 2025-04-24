@@ -1,0 +1,14 @@
+__pycache__/
+.pytest_cache/
+allure-2.33.0/
+allure-report/
+allure-results/
+chrome-win64/
+**/allure&log.txt
+**/browsers.json
+**/test_hw_7_log.log
+**/cm.exe
+**/geckodriver.exe
+**/selenoid.exe
+**/yandexdriver.exe
+.env

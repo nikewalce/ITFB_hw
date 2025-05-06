@@ -1,0 +1,22 @@
+from selenium.webdriver.common.by import By
+
+class CheckoutCartLocators:
+    CHECKOUT_BUTTON = (By.XPATH, "//a[contains(@class, 'btn') and contains(text(), 'Checkout')]")
+    INPUT_REGISTER_ACCOUNT = (By.XPATH, "//input[@id='input-register']")
+    INPUT_FIRST_NAME = (By.XPATH, "//input[@id='input-firstname']")
+    INPUT_LAST_NAME = (By.XPATH, "//input[@id='input-lastname']")
+    INPUT_EMAIL = (By.XPATH, "//input[@id='input-email']")
+    INPUT_SHIPPING_ADDRESS1 = (By.XPATH, "//input[@id='input-shipping-address-1']")
+    INPUT_SHIPPING_CITY = (By.XPATH, "//input[@id='input-shipping-city']")
+    INPUT_SHIPPING_POSTCODE = (By.XPATH, "//input[@id='input-shipping-postcode']")
+    SELECT_INPUT_SHIPPING_COUNTY = (By.XPATH, "//select[@id='input-shipping-country']")
+    OPTION_SHIPPING_COUNTY = (By.XPATH, "//option[@value='9']")
+    SELECT_INPUT_SHIPPING_REGION = (By.XPATH, "//select[@id='input-shipping-zone']")
+    OPTION_SHIPPING_REGION = (By.XPATH, "//option[@value='153']")
+    INPUT_PASSWORD = (By.XPATH, "//input[@id='input-password']")
+    INPUT_REGISTER_AGREE = (By.XPATH, "//input[@id='input-register-agree']")
+    CONTINUE_BUTTON = (By.XPATH, "//button[@id='button-register']")
+    MY_ACCOUNT_SPAN = (By.XPATH, "//span[@class='d-none' and contains(text(), 'My Account')]")
+    FORM_CHECK_LABEL = (By.XPATH, "//label[@class='form-check-label']")
+    MY_ACCOUNT_LINK = (By.XPATH, "//a[@id='dropdown-item' and contains(text(), 'My Account')]")
+    EDIT_ACCOUNT_INFORMATION_LINK = (By.XPATH, '//a[contains(text(),"Edit your account information")]')

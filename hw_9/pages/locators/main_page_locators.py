@@ -6,4 +6,4 @@ class MainPageLocators:
     EURO_CURRENCY = (By.XPATH, "//a[text()='€ Euro']")
     DOLLAR_CURRENCY = (By.XPATH, "//a[text()='$ US Dollar']")
     CURRENCY_TEXT = (By.XPATH, "//strong")
-    CAMERAS_BUTTON = (By.XPATH, "//a[@class='nav-link' and text()='Cameras']")
+    CAMERAS_BUTTON = (By.XPATH, "//a[text()='Cameras']")

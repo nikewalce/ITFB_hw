@@ -4,7 +4,6 @@ import allure
 
 class ProductCartPage(BasePage):
     def click_select_available_options_dropdown_button(self):
-        self.scroll_to_end(2)
         self.get_element(Locator.SELECT_AVAILABLE_OPTIONS_DROPDOWN_LIST, timeout=1).click()
         self.get_element(Locator.OPTION_RED, timeout=1).click()
 
@@ -18,8 +17,5 @@ class ProductCartPage(BasePage):
         self.get_element(Locator.ADD_TO_CART_BUTTON, timeout=1).click()
 
     def click_shopping_cart(self):
-        self.scroll_to_top(3)
-        self.get_element(Locator.SHOPPING_CART_BUTTON, timeout=1).click()
+        self.get_element(Locator.SHOPPING_CART_BUTTON, timeout=3).click()
 
-    def close_success_alert(self):
-        self.get_element(Locator.SUCCESS_ALERT, timeout=1).click()

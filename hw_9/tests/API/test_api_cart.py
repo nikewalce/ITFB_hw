@@ -4,32 +4,24 @@ from .models import (Token)
 
 @pytest.mark.api_cart
 def test_get_token(base_url, login_data):
-    response = requests.post(f"{base_url}/account/login", data=login_data)
+    response = requests.post(f"{base_url}/login", data=login_data)
     assert response.status_code == 200
     validated_response = Token(**response.json())
     assert isinstance(validated_response.api_token, str)
 
 def test_add_to_cart(base_url, login_data):
-    login_response = requests.post(f"{base_url}/account/login", data=login_data)
+    login_response = requests.post(f"{base_url}/login", data=login_data)
     assert login_response.status_code == 200
 
     # Проверяем правильность получения токена
     validated_response = Token(**login_response.json())
     assert isinstance(validated_response.api_token, str)
 
-    ADD_TO_CART_URL = f'{base_url}/sale/cart/add'
-    data = {
-        "product_id": 123,
-        "quantity": 2,
-        "option[1]": "value1",
-        "option[2]": "value2",
-        "subscription_plan_id": 0
-    }
+    ADD_TO_CART_URL = f'{base_url}/cart/add&api_token={validated_response.api_token}'
+
     add_payload = {
         'product_id': 40,  # ID товара
         'quantity': 1,
-        "option": "value2",
-        "subscription_plan_id": 0,
     }
 
 

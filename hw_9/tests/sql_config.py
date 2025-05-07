@@ -1,47 +1,21 @@
-from sqlalchemy import create_engine, Table, MetaData
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, MetaData, Table, select, delete
 
-# Подключение к базе данных OpenCart с использованием SQLAlchemy
-DATABASE_URL = 'mysql+mysqlconnector://username:password@localhost/opencart_db'
+engine = create_engine("mysql+pymysql://bn_opencart:@localhost:3306/bitnami_opencart")
 
-# Создание подключения и сессии
-engine = create_engine(DATABASE_URL, echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
+metadata = MetaData()
+customer_table = Table("oc_customer", metadata, autoload_with=engine)
 
+def select_users_info():
+    with engine.connect() as conn:
+        result = conn.execute(select(customer_table).limit(10))
+        for row in result.mappings():  # <-- возвращает dict-подобные строки
+            print(dict(row))           # <-- теперь это безопасно
 
-def delete_user_from_opencart(user_id):
-    # Загружаем метаданные
-    metadata = MetaData()
+def delete_user_by_email(email: str):
+    with engine.begin() as conn:
+        stmt = delete(customer_table).where(customer_table.c.email == email)
+        result = conn.execute(stmt)
+        print(f"Удалено пользователей: {result.rowcount}")
 
-    # Определяем таблицы
-    oc_customer = Table('oc_customer', metadata, autoload_with=engine)
-    oc_address = Table('oc_address', metadata, autoload_with=engine)
-    oc_customer_group = Table('oc_customer_group', metadata, autoload_with=engine)
-
-    try:
-        # Удаляем пользователя из таблицы oc_customer
-        session.execute(oc_customer.delete().where(oc_customer.c.customer_id == user_id))
-
-        # Удаляем связанные адреса из таблицы oc_address
-        session.execute(oc_address.delete().where(oc_address.c.customer_id == user_id))
-
-        # Удаляем группы пользователя из таблицы oc_customer_group
-        session.execute(oc_customer_group.delete().where(oc_customer_group.c.customer_id == user_id))
-
-        # Фиксируем изменения
-        session.commit()
-
-        print(f"User with ID {user_id} has been successfully deleted.")
-
-    except Exception as e:
-        print(f"Error: {e}")
-        session.rollback()
-
-    finally:
-        # Закрываем сессию
-        session.close()
-
-
-# Вызов функции с ID пользователя
-delete_user_from_opencart(123)  # Замените 123 на нужный ID пользователя
+# Пример вызова
+select_users_info()

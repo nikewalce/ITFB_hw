@@ -22,5 +22,6 @@ class Config:
         self.register_password = os.getenv("REGISTER_PASSWORD")
         self.token_username = os.getenv("TOKEN_USERNAME")
         self.token_key = os.getenv("TOKEN_KEY")
+        self.register_telephone = os.getenv("REGISTER_TELEPHONE")
 
 

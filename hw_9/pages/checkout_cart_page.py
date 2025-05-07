@@ -1,15 +1,16 @@
 from pages.base_page import BasePage
 from pages.locators.checkout_cart_locators import CheckoutCartLocators as Locator
 import allure
-import time
 
 class CheckoutCartPage(BasePage):
     def click_checkout_button(self):
-        self.scroll_to_end(5)
         self.get_element(Locator.CHECKOUT_BUTTON, timeout=1).click()
 
     def click_input_register_account(self):
         self.get_element(Locator.INPUT_REGISTER_ACCOUNT, timeout=1).click()
+
+    def click_button_continue(self):
+        self.get_element(Locator.NEW_CUSTOMER_BUTTON_CONTINUE, timeout=3).click()
 
     @allure.step('Ввод имени')
     def enter_firstname(self):
@@ -33,6 +34,14 @@ class CheckoutCartPage(BasePage):
         element = self.get_element(Locator.INPUT_EMAIL, timeout=1)
         element.clear()
         element.send_keys(self.config.register_email)
+        return self
+
+    @allure.step('Ввод телефона')
+    def enter_phone(self):
+        self.logger.info("Ввод телефона: %s", self.config.register_telephone)
+        element = self.get_element(Locator.INPUT_TELEPHONE, timeout=1)
+        element.clear()
+        element.send_keys(self.config.register_telephone)
         return self
 
     @allure.step('Ввод адреса 1')
@@ -84,6 +93,12 @@ class CheckoutCartPage(BasePage):
         element.send_keys(self.config.register_password)
         return self
 
+    @allure.step('Ввод подтверждения пароля')
+    def enter_password_confirm(self):
+        element = self.get_element(Locator.INPUT_PASSWORD_CONFIRM, timeout=1)
+        element.clear()
+        element.send_keys(self.config.register_password)
+
     @allure.step('Нажимаем на чекбокс согласия с политикой')
     def click_checkbox(self):
         self.logger.info("Клик по чекбоксу согласия с политикой")
@@ -102,7 +117,7 @@ class CheckoutCartPage(BasePage):
 
     def click_my_account(self):
         self.scroll_to_top(5)
-        self.get_element(Locator.MY_ACCOUNT_SPAN, timeout=1).click()
+        self.get_element(Locator.MY_ACCOUNT_LINK_DROPDOWN, timeout=1).click()
         self.get_element(Locator.MY_ACCOUNT_LINK, timeout=1).click()
 
     def click_edit_account_information(self):

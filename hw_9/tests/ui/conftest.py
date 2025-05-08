@@ -7,6 +7,9 @@ from selenium.webdriver.firefox.options import Options as FFOptions
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.edge.service import Service as EdgeService
 import allure
+from tests.sql_queries.sql_config_ui import delete_user_by_email as delete_user
+from tests.sql_queries.sql_config_ui import delete_cart_by_product_id as delete_cart
+from config import Config
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -84,7 +87,7 @@ def browser(request):
             driver = webdriver.Edge(options=options, service=EdgeService())
         else:
             options = webdriver.ChromeOptions()
-            binary_yandex_driver_file = 'yandexdriver.exe'
+            binary_yandex_driver_file = '../yandexdriver.exe'
             if headless:
                 options.add_argument(argument="headless=new")
             service = ChromiumService(binary_yandex_driver_file)
@@ -93,6 +96,13 @@ def browser(request):
     request.addfinalizer(driver.quit)
     return driver
 
+@pytest.fixture()
+def clean_test_data():
+    """Чистим за собой бд после тестов"""
+    yield
+    config = Config()
+    delete_user(config.register_email)
+    delete_cart(30)
 
 @pytest.fixture()
 def base_url(request):

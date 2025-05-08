@@ -24,6 +24,6 @@ def delete_cart_by_product_id(product_id: int):
         result = conn.execute(stmt)
         print(f"Удалено товаров из корзины: {result.rowcount}")
 
-# Пример вызова
-select_users_info()
-
+# # Пример вызова
+# select_users_info()
+# delete_user_by_email("test@test.ru")

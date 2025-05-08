@@ -3,14 +3,12 @@ from pages.cameras_catalog_page import CamerasCatalogPage
 from pages.product_cart_page import ProductCartPage
 from pages.checkout_cart_page import CheckoutCartPage
 from pages.account_information_page import AccountInformationPage
-from sql.sql_config_ui import delete_user_by_email as delete_user
-from sql.sql_config_ui import delete_cart_by_product_id as delete_cart
 import allure
 
 @allure.feature('DIPLOM')
 @allure.story('Тестирование регистрации')
 @allure.title('Регистрация пользователя при оформление товара')
-def test_user_registration_at_checkout_product(browser, base_url):
+def test_user_registration_at_checkout_product(browser, base_url, clean_test_data):
     browser.get(base_url)
     #Открыть главную страницу opencart
     main_page = MainPage(browser)
@@ -57,6 +55,4 @@ def test_user_registration_at_checkout_product(browser, base_url):
     #Нажать "Edit your account information"
     checkout_cart_page.click_edit_account_information()
     assert AccountInformationPage(browser).check_data() == True
-    #Чистим за собой
-    delete_user("test@test.ru")
-    delete_cart(30)
+

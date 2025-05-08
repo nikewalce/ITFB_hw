@@ -1,8 +1,8 @@
 import pytest
 from config import Config
-from api.models import Token
+from tests.api.models import Token
 import requests
-from sql.sql_config_api import CartDB
+from tests.sql_queries.sql_config_api import CartDB
 
 @pytest.fixture(scope="session")
 def db():

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
 class Token(BaseModel):
@@ -32,10 +32,21 @@ class Total(BaseModel):
     title: str
     text: str
 
+class Vouchers(BaseModel):
+    code: int
+    description: str
+    from_name: str
+    from_email: EmailStr
+    to_name: str
+    to_email: EmailStr
+    voucher_theme_id: str
+    message: str
+    price: str
+    amount: float
 
 class SelectCart(BaseModel):
     products: List[Product]
-    vouchers: List
+    vouchers: List[Vouchers]
     totals: List[Total]
 
 class CurrencyChange(BaseModel):

@@ -1,7 +1,7 @@
 import requests
 import pytest
-from api.models import AddCart, DeleteCart, UpdateCart, SelectCart, CurrencyChange, AddVoucher
-
+from tests.api.models import AddCart, DeleteCart, UpdateCart, SelectCart, CurrencyChange, AddVoucher
+import json
 
 @pytest.mark.api_cart
 def test_add_to_cart(base_url, api_token, db):
@@ -78,4 +78,9 @@ def test_add_voucher_to_cart(base_url, api_token, db):
 				}
     response = requests.post(add_voucher_to_cart_url, data=payload)
     assert response.status_code == 200, f"Ожидался статус 200, получен {response.status_code}"
-    assert isinstance(AddVoucher(**response.json()), AddVoucher), "Валидация ответа при смене валюты не прошла"
+    assert isinstance(AddVoucher(**response.json()), AddVoucher), "Валидация ответа при добавлении ваучера не прошла"
+    assert json.loads(db.select_oc_session(api_token)[1]).get("vouchers"), "Ключ 'vouchers' отсутствует или пуст"
+    select_cart_info_url = f'{base_url}/cart/products&api_token={api_token}'
+    response_cart_info = requests.post(select_cart_info_url, data={})
+    assert response_cart_info.json().get("vouchers"), "Ключ 'vouchers' пуст или отсутствует в ответе"
+    assert isinstance(SelectCart(**response_cart_info.json()), SelectCart), "Валидация ответа от получения содержимого корзины не прошла"

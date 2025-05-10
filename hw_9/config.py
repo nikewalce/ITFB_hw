@@ -6,7 +6,6 @@ class Config:
     def __init__(self, env_file: str = ".env"):
         env_path = Path(__file__).resolve().parent / env_file
         load_dotenv(dotenv_path=env_path)
-
         self.username = os.getenv("ADMIN_USERNAME")
         self.password = os.getenv("ADMIN_PASSWORD")
         self.product_name = os.getenv("PRODUCT_NAME")
@@ -23,5 +22,5 @@ class Config:
         self.token_username = os.getenv("TOKEN_USERNAME")
         self.token_key = os.getenv("TOKEN_KEY")
         self.register_telephone = os.getenv("REGISTER_TELEPHONE")
-
-
+        self.register_country_id = os.getenv("REGISTER_COUNTRY_ID")
+        self.register_zone_id = os.getenv("REGISTER_ZONE_ID")

@@ -9,6 +9,9 @@ from selenium.webdriver.edge.service import Service as EdgeService
 import allure
 from tests.sql_queries.sql_config_ui import delete_user_by_email as delete_user
 from tests.sql_queries.sql_config_ui import delete_cart_by_product_id as delete_cart
+from tests.sql_queries.sql_config_ui import create_customer_with_address as create_customer
+from tests.sql_queries.sql_config_ui import delete_address_by_firstname as delete_address
+from tests.sql_queries.sql_config_ui import delete_order_by_email as delete_order
 from config import Config
 
 @pytest.hookimpl(hookwrapper=True)
@@ -97,12 +100,34 @@ def browser(request):
     return driver
 
 @pytest.fixture()
+def create_user_with_address():
+    """Предусловие: необходим созданный юзер с заполненым адресов в профиле"""
+    config = Config()
+    create_customer(
+        firstname=config.register_firstname,
+        lastname=config.register_lastname,
+        email=config.register_email,
+        phone=config.register_telephone,
+        password=config.register_password,
+        address_1=config.register_shipping_address1,
+        city=config.register_city,
+        postcode=config.register_postcode,
+        country_id=config.register_country_id,
+        zone_id=config.register_zone_id
+    )
+    yield
+    delete_user(config.register_email)
+    delete_address(config.register_firstname)
+    delete_order(config.register_email)
+
+@pytest.fixture()
 def clean_test_data():
     """Чистим за собой бд после тестов"""
     yield
     config = Config()
     delete_user(config.register_email)
     delete_cart(30)
+    delete_address(config.register_firstname)
 
 @pytest.fixture()
 def base_url(request):

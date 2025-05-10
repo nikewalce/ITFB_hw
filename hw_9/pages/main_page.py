@@ -7,7 +7,11 @@ class MainPage(BasePage):
     def click_cameras_button(self):
         self.get_element(Locator.CAMERAS_BUTTON, timeout=1).click()
 
+    def click_my_account_button(self):
+        self.get_element(Locator.MY_ACCOUNT_BUTTON, timeout=1).click()
 
+    def click_link_login(self):
+        self.get_element(Locator.LINK_LOGIN, timeout=1).click()
 
     @allure.step('Нажатие на кнопку выбора валюты')
     def click_currency_button(self):

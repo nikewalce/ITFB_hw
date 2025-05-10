@@ -120,9 +120,64 @@ class CheckoutCartPage(BasePage):
         self.get_element(Locator.MY_ACCOUNT_LINK_DROPDOWN, timeout=1).click()
         self.get_element(Locator.MY_ACCOUNT_LINK, timeout=1).click()
 
-    def click_edit_account_information(self):
-        self.get_element(Locator.EDIT_ACCOUNT_INFORMATION_LINK, timeout=1).click()
-    # @allure.step('Проверяем, что аккаунт создан')
-    # def check_created_account(self):
-    #     self.logger.info("Проверка, что аккаунт создан")
-    #     return self.get_element(Locator.CREATED_ACCOUNT, timeout=2)
+    def click_remove_palm_button(self):
+        self.get_element(Locator.REMOVE_PALM_BUTTON, timeout=4).click()
+
+    def enter_quantity_iphone(self):
+        element = self.get_element(Locator.INPUT_QUANTITY_IPHONE, timeout=1)
+        element.clear()
+        element.send_keys("2")
+        return self
+
+    def click_update_button(self):
+        self.get_element(Locator.UPDATE_BUTTON, timeout=1).click()
+
+    def click_estimate_shipping_link(self):
+        self.get_element(Locator.ESTIMATE_SHIPPIN_LINK, timeout=1).click()
+
+    def click_select_estimate_country(self):
+        self.get_element(Locator.SELECT_ESTIMATE_COUNTRY, timeout=1).click()
+        self.get_element(Locator.OPTION_SHIPPING_COUNTY, timeout=1).click()
+
+    def click_select_estimate_region(self):
+        self.get_element(Locator.SELECT_ESTIMATE_REGION, timeout=1).click()
+        self.get_element(Locator.OPTION_SHIPPING_REGION, timeout=1).click()
+
+    def enter_estimate_postcode(self):
+        element = self.get_element(Locator.INPUT_ESTIMATE_POSTCODE, timeout=1)
+        element.clear()
+        element.send_keys(self.config.register_postcode)
+        return self
+
+    def click_get_quotes_button(self):
+        self.get_element(Locator.GET_QUOTES_BUTTON, timeout=1).click()
+
+    def click_cancel_modal_button(self):
+        self.get_element(Locator.CANCEL_MODAL_BUTTON, timeout=1).click()
+
+    def click_checkbox_use_existing_address(self):
+        self.get_element(Locator.CHECKBOX_USE_EXISTING_ADDRESS, timeout=1).click()
+
+    def click_continue_button_payment_address(self):
+        self.get_element(Locator.CONTINUE_BUTTON_PAYMENT_ADDRESS, timeout=1).click()
+
+    def click_checkbox_use_existing_shipping_address(self):
+        self.get_element(Locator.CHECKBOX_USE_EXISTING_SHIPPING_ADDRESS, timeout=1).click()
+
+    def click_continue_button_shipping_address(self):
+        self.get_element(Locator.CONTINUE_BUTTON_SHIPPING_ADDRESS, timeout=1).click()
+
+    def enter_comment_textarea(self):
+        element = self.get_element(Locator.COMMENT_TEXTAREA, timeout=1)
+        element.clear()
+        element.send_keys("TEXTONETWO")
+        return self
+
+    def click_continue_button_shipping_method(self):
+        self.get_element(Locator.CONTINUE_BUTTON_SHIPPING_METHOD, timeout=1).click()
+
+    def click_continue_button_payment_method(self):
+        self.get_element(Locator.CONTINUE_BUTTON_PAYMENT_METHOD, timeout=1).click()
+
+    def click_confirm_order_button(self):
+        self.get_element(Locator.CONFIRM_ORDER_BUTTON, timeout=1).click()

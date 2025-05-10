@@ -1,0 +1,5 @@
+from selenium.webdriver.common.by import By
+
+class AccountAccountLocators:
+    EDIT_ACCOUNT_INFORMATION_LINK = (By.XPATH, '//a[contains(text(),"Edit your account information")]')
+    PHONESANDPDAS_LINK = (By.XPATH, '//a[contains(text(),"Phones & PDAs")]')

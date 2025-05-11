@@ -49,6 +49,23 @@ def browser(request):
                 "enableVideo": False,
             }
             options = ChromeOptions()
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-blink-features=AutomationControlled")
+            options.add_argument(
+                "--disable-features=PasswordManagerOnboarding,AutofillServerCommunication,AutofillEnableAccountWalletStorage,SafeBrowsingEnhancedProtection")
+            options.add_argument("--disable-popup-blocking")
+            options.add_argument("--disable-notifications")
+            # Отключаем сохранение паролей и всплывающие окна
+            prefs = {
+                "credentials_enable_service": False,
+                "profile.password_manager_enabled": False,
+                "profile.default_content_setting_values.notifications": 2,
+                "profile.default_content_setting_values.popups": 2,
+                "profile.default_content_setting_values.automatic_downloads": 1,
+                "safebrowsing.enabled": False
+            }
+            options.add_experimental_option("prefs", prefs)
             if headless:
                 options.add_argument("headless=new")
                 options.add_argument("--disable-gpu")
@@ -75,6 +92,24 @@ def browser(request):
     else:
         if browser_name == "chrome":
             options = ChromeOptions()
+
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-blink-features=AutomationControlled")
+            options.add_argument(
+                "--disable-features=PasswordManagerOnboarding,AutofillServerCommunication,AutofillEnableAccountWalletStorage,SafeBrowsingEnhancedProtection")
+            options.add_argument("--disable-popup-blocking")
+            options.add_argument("--disable-notifications")
+            # Отключаем сохранение паролей и всплывающие окна
+            prefs = {
+                "credentials_enable_service": False,
+                "profile.password_manager_enabled": False,
+                "profile.default_content_setting_values.notifications": 2,
+                "profile.default_content_setting_values.popups": 2,
+                "profile.default_content_setting_values.automatic_downloads": 1,
+                "safebrowsing.enabled": False
+            }
+            options.add_experimental_option("prefs", prefs)
             if headless:
                 options.add_argument(argument="headless=new")
             driver = webdriver.Chrome(options=options, service=ChromiumService())

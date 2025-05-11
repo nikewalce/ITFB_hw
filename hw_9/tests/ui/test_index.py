@@ -9,6 +9,7 @@ from pages.search_page import SearchPage
 from pages.compare_product_page import CompareProductPage
 from pages.checkout_success_page import CheckoutSuccessPage
 from pages.account_order_page import AccountOrderPage
+from pages.account_wishlist_page import AccountWishlistPage
 import allure
 
 @allure.feature('DIPLOM')
@@ -62,6 +63,9 @@ def test_user_registration_at_checkout_product(browser, base_url, clean_test_dat
     AccountAccountPage(browser).click_edit_account_information()
     assert AccountInformationPage(browser).check_data() == True
 
+@allure.feature('DIPLOM')
+@allure.story('Тестирование оформления заказа')
+@allure.title('Оформление заказа авторизованным пользователем со страницы сравнения')
 def test_checkout_from_compare_page_authenticated_user(browser, base_url, create_user_with_address):
     browser.get(base_url)
     # Открыть главную страницу opencart
@@ -149,3 +153,93 @@ def test_checkout_from_compare_page_authenticated_user(browser, base_url, create
     #Выбрать "Order History"
     checkout_success_page.click_order_history_button()
     assert AccountOrderPage(browser).check_customer_info()
+
+def test_checkout_from_compare_as_authorized_user(browser, base_url, create_user_with_address):
+    browser.get(base_url)
+    # Открыть главную страницу opencart
+    main_page = MainPage(browser)
+    #Предусловие
+    main_page.click_my_account_button()
+    main_page.click_link_login()
+    account_login_page = AccountLoginPage(browser)
+    account_login_page.enter_email()
+    account_login_page.enter_password()
+    account_login_page.click_login_button()
+    AccountAccountPage(browser).click_main_page_logo()
+    #В панели с категорией товаров навести мышкой на "Components"
+    main_page.components_mouseover()
+    #В выпавшем списке нажать "Monitors"
+    main_page.click_monitors_link()
+    #Нажать кнопку "Add to Wish List" под товаром "Apple Cinema 30
+    catalog_page = CatalogPage(browser)
+    catalog_page.click_add_to_wish_list_apple()
+    #Нажать кнопку "Add to Wish List" под товаром "Samsung SyncMaster 941BW
+    catalog_page.click_add_to_wish_list_samsung()
+    #В верхней навигационной панели нажать "Wish List"
+    catalog_page.click_wish_list()
+    #Нажать кнопку "Add to Cart" товара "Apple Cinema 30"
+    account_wishlist_page = AccountWishlistPage(browser)
+    account_wishlist_page.click_add_to_cart_apple_button()
+    #Выбрать чекбокс "Medium" для опции "Radio
+    product_cart_page = ProductCartPage(browser)
+    product_cart_page.click_radio_medium_checkbox()
+    #Выбрать чекбокс "Checkbox 3" для опции "Checkbox"
+    product_cart_page.click_checkbox3()
+    #Выбрать чекбокс "Checkbox 3" для опции "Checkbox"
+    product_cart_page.click_checkbox4()
+    #Заполнить поле "Text" значением "Текст"
+    product_cart_page.enter_text_text()
+    #Нажать в поле "Select"
+    product_cart_page.click_select_available_options_dropdown()
+    #	В выпавшем списке выбрать "Yellow"
+    product_cart_page.click_yellow_available_options()
+    #Заполнить поле "Textarea" значением "Текст"
+    product_cart_page.enter_textarea_available_options()
+    #В поле "File" вставить пустой файл формата txt
+    product_cart_page.upload_file()
+    #Поля дат и времени заполнить любым значением
+    product_cart_page.enter_date_time()
+    #Заполнить поле "Qty" значением "2"
+    product_cart_page.qty_entry()
+    #Нажать кнопку "Add to Cart"
+    product_cart_page.click_add_to_cart_button()
+    #	Нажать кнопку корзины справа от поля поиска
+    product_cart_page.click_cart_div()
+    #В форме нажать "Checkout"
+    product_cart_page.click_cart_checkout()
+    #Выбрать чек-бох "I want to use an existing address"(если не выбран)
+    checkout_cart_page = CheckoutCartPage(browser)
+    checkout_cart_page.click_checkbox_use_existing_address()
+    # Нажать "Continue"
+    checkout_cart_page.click_continue_button_payment_address()
+    # Выбрать чек-бох "I want to use an existing address"(если не выбран)
+    checkout_cart_page.click_checkbox_use_existing_shipping_address()
+    # Нажать "Continue"
+    checkout_cart_page.click_continue_button_shipping_address()
+    # В поле "Add Comments" добавить текст из 10 символов
+    checkout_cart_page.enter_comment_textarea()
+    # Нажать "Continue"
+    checkout_cart_page.click_continue_button_shipping_method()
+    # Активировать чекбокс "I have read and agree to the Terms & Conditions"
+    checkout_cart_page.click_checkbox()
+    #	Нажать "Continue"
+    checkout_cart_page.click_continue_button_payment_method()
+    #	Нажать "Confirm Order"
+    checkout_cart_page.click_confirm_order_button()
+    # В верхней навигационной панели нажать "My account"
+    checkout_success_page = CheckoutSuccessPage(browser)
+    checkout_success_page.click_my_account_button()
+    # Выбрать "Order History"
+    checkout_success_page.click_order_history_button()
+    account_order_page = AccountOrderPage(browser)
+    #Нажать "View" для ранее созданного заказа
+    account_order_page.click_view_button()
+    #Нажать кнопку "Return" для ранее заказанного товара
+    account_order_page.click_return_link()
+    #Заполнить поле "Telephone" любым 11-и значным номером
+    account_order_page.enter_telephone()
+    #В поле "Reason for Return" нажать на любой чекбокс
+    account_order_page.click_reason_for_return_checkbox()
+    #Нажать "Submit"
+    account_order_page.click_submit_button()
+    assert "account/return/success" in browser.current_url, "URL не содержит 'account/return/success'"

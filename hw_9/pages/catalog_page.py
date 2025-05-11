@@ -28,3 +28,15 @@ class CatalogPage(BasePage):
 
     def click_search_button(self):
         self.get_element(Locator.SEARCH_SPAN, timeout=1).click()
+
+    def click_add_to_wish_list_apple(self):
+        self.get_element(Locator.ADD_TO_WISH_LIST_APPLE_BUTTON, timeout=1).click()
+        self.scroll_to_end(3)
+
+    def click_add_to_wish_list_samsung(self):
+        self.scroll_to_end(3)
+        self.get_element(Locator.ADD_TO_WISH_LIST_SAMSUNG_BUTTON, timeout=1).click()
+
+    def click_wish_list(self):
+        self.scroll_to_top(3)
+        self.get_element(Locator.WISH_LIST_LINK, timeout=1).click()

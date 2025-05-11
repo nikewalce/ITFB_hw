@@ -44,9 +44,10 @@ class BasePage:
 
     def allert(self):
         try:
-            alert = Alert(self.browser)
+            WebDriverWait(self.browser, 5).until(EC.alert_is_present())
+            alert = self.browser.switch_to.alert
+            print(f"Alert text: {alert.text}")  # для логирования
             alert.accept()
-            self.logger.info("Алерт принят(закрыт)")
         except NoAlertPresentException:
             self.logger.debug("Нет алерта")
 
@@ -64,6 +65,11 @@ class BasePage:
     def text_to_be_present_in_element(self,  locator, text, timeout):
         self.logger.info("Проверка на то, что текст есть в элементе")
         return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
+
+    def mouseover(self, locator, timeout):
+        element = self.get_element(locator, timeout=timeout)
+        actions = ActionChains(self.browser)
+        actions.move_to_element(element).perform()
 
     def scroll_to_top(self, count_scrolling: int):
         self.logger.debug("Скроллинг вверх через ActionChains (несколько раз Page Up)")

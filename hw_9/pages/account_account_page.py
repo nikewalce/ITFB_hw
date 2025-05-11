@@ -8,3 +8,6 @@ class AccountAccountPage(BasePage):
 
     def click_PhonesAndPDAs(self):
         self.get_element(Locator.PHONESANDPDAS_LINK, timeout=1).click()
+
+    def click_main_page_logo(self):
+        self.get_element(Locator.MAIN_PAGE_LOGO, timeout=1).click()

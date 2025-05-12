@@ -39,4 +39,3 @@ class CheckoutCartLocators:
     CONTINUE_BUTTON_SHIPPING_METHOD = (By.XPATH, "//input[@id='button-shipping-method']")
     CONTINUE_BUTTON_PAYMENT_METHOD = (By.XPATH, "//input[@id='button-payment-method']")
     CONFIRM_ORDER_BUTTON = (By.XPATH, "//input[@id='button-confirm']")
-

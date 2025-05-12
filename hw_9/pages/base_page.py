@@ -1,6 +1,5 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.alert import Alert
 from selenium.common.exceptions import NoAlertPresentException
 import logging
 import allure
@@ -9,7 +8,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 class BasePage:
-    """Базовый класс"""
     def __init__(self, browser):
         self.browser = browser
         self.config = Config()
@@ -18,20 +16,15 @@ class BasePage:
 
     def _create_logger(self):
         logger = logging.getLogger("selenium_test_log")
-
         if not logger.hasHandlers():
             logger.setLevel(logging.DEBUG)
-
             # Запись в файл
-            file_handler = logging.FileHandler("test_hw_7_log.log", mode='a', encoding='utf-8')
+            file_handler = logging.FileHandler("diplom.log", mode='a', encoding='utf-8')
             file_handler.setLevel(logging.DEBUG)
-
             # Формат логов
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             file_handler.setFormatter(formatter)
-
             logger.addHandler(file_handler)
-
         return logger
 
     def take_screenshot(self):
@@ -46,40 +39,65 @@ class BasePage:
         try:
             WebDriverWait(self.browser, 5).until(EC.alert_is_present())
             alert = self.browser.switch_to.alert
-            print(f"Alert text: {alert.text}")  # для логирования
             alert.accept()
+            self.logger.info(f"[{self.class_name}] Alert найден и закрыт")
         except NoAlertPresentException:
-            self.logger.debug("Нет алерта")
+            self.logger.debug(f"[{self.class_name}] Нет алерта")
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Ошибка при работе с alert: {e}")
+            raise
 
     def get_element(self, locator, timeout):
-        self.logger.info("Получение элемента")
-        return WebDriverWait(self.browser, timeout).until(EC.visibility_of_element_located(locator))
+        self.logger.info(f"Получение элемента: {locator}")
+        try:
+            return WebDriverWait(self.browser, timeout).until(EC.visibility_of_element_located(locator))
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Ошибка при получении элемента {locator}: {e}")
+            raise
 
     def presence_of_element_located(self, locator, timeout):
-        return WebDriverWait(self.browser,timeout).until(EC.presence_of_element_located(locator))
+        try:
+            return WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located(locator))
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Элемент не найден (presence_of): {locator}, {e}")
+            raise
 
     def refresh_page(self):
-        actions = ActionChains(self.browser)
-        actions.key_down(Keys.CONTROL).send_keys('r').key_up(Keys.CONTROL).perform()
+        try:
+            actions = ActionChains(self.browser)
+            actions.key_down(Keys.CONTROL).send_keys('r').key_up(Keys.CONTROL).perform()
+            self.logger.info(f"[{self.class_name}] Страница перезагружена через Ctrl+R")
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Ошибка при обновлении страницы: {e}")
+            raise
 
     def text_to_be_present_in_element(self,  locator, text, timeout):
-        self.logger.info("Проверка на то, что текст есть в элементе")
-        return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
+        self.logger.info(f"[{self.class_name}] Проверка наличия текста '{text}' в элементе {locator}")
+        try:
+            return WebDriverWait(self.browser, timeout).until(EC.text_to_be_present_in_element(locator, text))
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Текст '{text}' не найден в элементе: {locator}, {e}")
+            raise
 
     def mouseover(self, locator, timeout):
-        element = self.get_element(locator, timeout=timeout)
-        actions = ActionChains(self.browser)
-        actions.move_to_element(element).perform()
+        try:
+            self.logger.info(f"[{self.class_name}] Наведение на элемент: {locator}")
+            element = self.get_element(locator, timeout=timeout)
+            actions = ActionChains(self.browser)
+            actions.move_to_element(element).perform()
+        except Exception as e:
+            self.logger.error(f"[{self.class_name}] Ошибка при наведении на элемент {locator}: {e}")
+            raise
 
     def scroll_to_top(self, count_scrolling: int):
-        self.logger.debug("Скроллинг вверх через ActionChains (несколько раз Page Up)")
+        self.logger.debug(f"Скроллинг вверх через ActionChains ({count_scrolling} раз Page Up)")
         actions = ActionChains(self.browser)
         for _ in range(count_scrolling):
             actions.send_keys(Keys.PAGE_UP).pause(0.2).perform()
         self.logger.debug("Скроллинг вверх завершен")
 
     def scroll_to_end(self, count_scrolling: int):
-        self.logger.debug("Скроллинг вниз через ActionChains (несколько раз Page Down)")
+        self.logger.debug(f"Скроллинг вниз через ActionChains ({count_scrolling} раз Page Down)")
         actions = ActionChains(self.browser)
         for _ in range(count_scrolling):
             actions.send_keys(Keys.PAGE_DOWN).pause(0.2).perform()

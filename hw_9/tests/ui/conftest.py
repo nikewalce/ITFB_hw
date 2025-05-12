@@ -13,6 +13,9 @@ from tests.sql_queries.sql_config_ui import create_customer_with_address as crea
 from tests.sql_queries.sql_config_ui import delete_address_by_firstname as delete_address
 from tests.sql_queries.sql_config_ui import delete_order_by_email as delete_order
 from config import Config
+from pages.account_login_page import AccountLoginPage
+from pages.account_account_page import AccountAccountPage
+from pages.main_page import MainPage
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -94,6 +97,7 @@ def browser(request):
             options = ChromeOptions()
 
             options.add_argument("--no-sandbox")
+            options.add_argument("--force-device-scale-factor=0.5")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-blink-features=AutomationControlled")
             options.add_argument(
@@ -168,24 +172,3 @@ def clean_test_data():
 def base_url(request):
     return request.config.getoption("--url")
 
-@pytest.fixture(params=[("MacBook","http://opencart/index.php?route=product/product&language=en-gb&product_id=43"),
-                        ("HTC Touch HD","http://opencart/index.php?route=product/product&language=en-gb&product_id=28&path=24"),
-                        ("Samsung Galaxy Tab 10.1","http://opencart/index.php?route=product/product&language=en-gb&product_id=49&path=57")])
-def card_url(request):
-    return request.param
-
-@pytest.fixture()
-def admin_url():
-    return 'http://localhost/administration/index.php?route=common/login'
-
-@pytest.fixture()
-def register_url():
-    return 'http://localhost/opencart-master/upload/index.php?route=account/register'
-
-@pytest.fixture(params=["Desktops", "Laptops & Notebooks", "Components", "MP3 Players"])
-def dropdown_categories(request):
-    return request.param
-
-@pytest.fixture(params=["Tablets", "Software", "Phones & PDAs", "Cameras"])
-def redirect_categories(request):
-    return request.param

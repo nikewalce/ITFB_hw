@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, MetaData, Table, select, delete
 
-
 class CartDB:
     def __init__(self):
         """Инициализируем БД и необходимые таблицы"""
@@ -11,6 +10,7 @@ class CartDB:
         self.oc_session = Table("oc_session", self.metadata, autoload_with=self.engine)
 
     def select_oc_session(self, api_token):
+        """Вывод таблицы oc_session по session_id(токен)"""
         with self.engine.connect() as conn:
             stmt = select(self.oc_session).where(
                 self.oc_session.c.session_id == api_token

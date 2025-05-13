@@ -7,15 +7,9 @@ from selenium.webdriver.firefox.options import Options as FFOptions
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.edge.service import Service as EdgeService
 import allure
-from tests.sql_queries.sql_config_ui import delete_user_by_email as delete_user
-from tests.sql_queries.sql_config_ui import delete_cart_by_product_id as delete_cart
-from tests.sql_queries.sql_config_ui import create_customer_with_address as create_customer
-from tests.sql_queries.sql_config_ui import delete_address_by_firstname as delete_address
-from tests.sql_queries.sql_config_ui import delete_order_by_email as delete_order
+from tests.sql_queries.sql_config_ui import OpenCartDB
 from config import Config
-from pages.account_login_page import AccountLoginPage
-from pages.account_account_page import AccountAccountPage
-from pages.main_page import MainPage
+from pages.page_factory import PageFactory
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -48,27 +42,9 @@ def browser(request):
         if browser_name == "chrome":
             capabilities = {
                 "browserName": "chrome",
-                "enableVNC": True,
-                "enableVideo": False,
             }
             options = ChromeOptions()
             options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            options.add_argument(
-                "--disable-features=PasswordManagerOnboarding,AutofillServerCommunication,AutofillEnableAccountWalletStorage,SafeBrowsingEnhancedProtection")
-            options.add_argument("--disable-popup-blocking")
-            options.add_argument("--disable-notifications")
-            # Отключаем сохранение паролей и всплывающие окна
-            prefs = {
-                "credentials_enable_service": False,
-                "profile.password_manager_enabled": False,
-                "profile.default_content_setting_values.notifications": 2,
-                "profile.default_content_setting_values.popups": 2,
-                "profile.default_content_setting_values.automatic_downloads": 1,
-                "safebrowsing.enabled": False
-            }
-            options.add_experimental_option("prefs", prefs)
             if headless:
                 options.add_argument("headless=new")
                 options.add_argument("--disable-gpu")
@@ -95,40 +71,26 @@ def browser(request):
     else:
         if browser_name == "chrome":
             options = ChromeOptions()
-
             options.add_argument("--no-sandbox")
             options.add_argument("--force-device-scale-factor=0.5")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            options.add_argument(
-                "--disable-features=PasswordManagerOnboarding,AutofillServerCommunication,AutofillEnableAccountWalletStorage,SafeBrowsingEnhancedProtection")
-            options.add_argument("--disable-popup-blocking")
-            options.add_argument("--disable-notifications")
-            # Отключаем сохранение паролей и всплывающие окна
-            prefs = {
-                "credentials_enable_service": False,
-                "profile.password_manager_enabled": False,
-                "profile.default_content_setting_values.notifications": 2,
-                "profile.default_content_setting_values.popups": 2,
-                "profile.default_content_setting_values.automatic_downloads": 1,
-                "safebrowsing.enabled": False
-            }
-            options.add_experimental_option("prefs", prefs)
             if headless:
                 options.add_argument(argument="headless=new")
             driver = webdriver.Chrome(options=options, service=ChromiumService())
         elif browser_name == "firefox":
             options = FFOptions()
+            options.add_argument("--force-device-scale-factor=0.5")
             if headless:
                 options.add_argument(argument="-headless")
             driver = webdriver.Firefox(options=options, service=FFService())
         elif browser_name == "edge":
             options = EdgeOptions()
+            options.add_argument("--force-device-scale-factor=0.5")
             if headless:
                 options.add_argument(argument="headless=new")
             driver = webdriver.Edge(options=options, service=EdgeService())
         else:
             options = webdriver.ChromeOptions()
+            options.add_argument("--force-device-scale-factor=0.5")
             binary_yandex_driver_file = '../yandexdriver.exe'
             if headless:
                 options.add_argument(argument="headless=new")
@@ -141,8 +103,9 @@ def browser(request):
 @pytest.fixture()
 def create_user_with_address():
     """Предусловие: необходим созданный юзер с заполненым адресов в профиле"""
+    db = OpenCartDB()
     config = Config()
-    create_customer(
+    db.create_customer_with_address(
         firstname=config.register_firstname,
         lastname=config.register_lastname,
         email=config.register_email,
@@ -155,20 +118,30 @@ def create_user_with_address():
         zone_id=config.register_zone_id
     )
     yield
-    delete_user(config.register_email)
-    delete_address(config.register_firstname)
-    delete_order(config.register_email)
+    db.delete_user_by_email(config.register_email)
+    db.delete_address_by_firstname(config.register_firstname)
+    db.delete_order_by_email(config.register_email)
+    db.delete_return_by_email(config.register_email)
+    db.delete_order_product_by_product_id([40, 42])
+    db.clear_order_history()
+    db.clear_order_total()
 
 @pytest.fixture()
 def clean_test_data():
     """Чистим за собой бд после тестов"""
     yield
+    db = OpenCartDB()
     config = Config()
-    delete_user(config.register_email)
-    delete_cart(30)
-    delete_address(config.register_firstname)
+    db.delete_user_by_email(config.register_email)
+    db.delete_cart_by_product_id(30)
+    db.delete_address_by_firstname(config.register_firstname)
+    db.clear_order_history()
+    db.clear_order_total()
 
 @pytest.fixture()
 def base_url(request):
     return request.config.getoption("--url")
 
+@pytest.fixture()
+def pages(browser):
+    return PageFactory(browser)

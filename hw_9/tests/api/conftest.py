@@ -3,12 +3,30 @@ from config import Config
 from tests.api.models import Token
 import requests
 from tests.sql_queries.sql_config_api import CartDB
+import logging
 
 @pytest.fixture(scope="session")
 def db():
     """Фикстура для инициализации подключения к базе данных."""
     db_instance = CartDB()
     return db_instance
+
+@pytest.fixture(scope="function")
+def logger(request):
+    logger = logging.getLogger(request.node.name)
+    if not logger.hasHandlers():
+        logger.setLevel(logging.DEBUG)
+        # Запись в файл
+        file_handler = logging.FileHandler("diplom.log", mode='a', encoding='utf-8')
+        file_handler.setLevel(logging.DEBUG)
+        # Формат логов
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    yield logger
+    # Удаление хендлеров после завершения теста, чтобы не дублировались логи
+    for h in logger.handlers[:]:
+        logger.removeHandler(h)
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -31,7 +49,6 @@ def login_data():
     }
     return login_data
 
-
 @pytest.fixture(scope="session")
 def api_token(base_url, login_data, db):
     """Фикстура для получения и проверки токена."""
@@ -41,23 +58,6 @@ def api_token(base_url, login_data, db):
     assert isinstance(validated_token.api_token, str), "Токен не строка"
     yield validated_token.api_token
     #Чистим за собой
-    #db.delete_cart_by_api_id(2)
+    db.delete_cart_by_api_id(2)
     db.delete_session_by_session_id(validated_token.api_token)
     db.delete_oc_session_by_session_id(validated_token.api_token)
-
-# @pytest.fixture(params=["b54b16e1-ac3b-4bff-a11f-f7ae9ddc27e0",
-#                         "ef970757-fe42-416f-931d-722451f1f59c",
-#                         "ea4f30c0-bce6-416b-8904-fab4055a7362",
-#                         "5ae467af-66dc-4d7f-8839-44228f89b596",
-#                         "58293321-14ae-49d7-9a7b-08436c9e63a6"])
-# def breweries(request):
-#     return request.param
-#
-# @pytest.fixture(params=["San Diego",
-#                         "Jangsu-gun",
-#                         "Norman",
-#                         "Mount Pleasant",
-#                         "Gangnam-gu"])
-# def city(request):
-#     return request.param
-
